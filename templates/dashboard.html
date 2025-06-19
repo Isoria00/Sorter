@@ -9,72 +9,47 @@
       rel="stylesheet"
     />
   </head>
-  <body
-    class="bg-gray-100 text-gray-800 h-screen w-screen flex overflow-hidden"
-  >
+  <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col md:flex-row">
     <!-- Sidebar -->
-    <div class="w-64 bg-gray-900 text-white flex flex-col p-6 space-y-6">
-      <!-- Logo and Title -->
-      <div style="height: 100px; width: 100px; border-radius: 20px">
-        <img
-          src="data:image/png;base64,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"
-          alt=""
-          style="border-radius: 10px"
-        />
+    <aside class="w-full md:w-64 bg-gray-900 text-white p-6 space-y-6 md:min-h-screen">
+      <div class="flex flex-col items-center space-y-4">
+        <div class="h-24 w-24 rounded-2xl">
+          
+        </div>
+        <h2 class="text-2xl font-bold">Mini Sorter</h2>
       </div>
-      <h2 class="text-2xl font-bold">Mini Optimum</h2>
-      <nav class="space-y-3">
-        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700"
-          >Dashboard</a
-        >
-        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Start</a>
-        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700"
-          >Sort Options</a
-        >
+      <nav class="space-y-3 mt-6">
+        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</a>
+        <a href="#" onclick="startSystem()" class="block px-3 py-2 rounded hover:bg-gray-700">Start/Stop</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Sort Options</a>
         <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Logs</a>
-        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700"
-          >Settings</a
-        >
-        <button
-          class="block px-3 py-2 rounded hover:bg-gray-700"
-          onclick="changeBackground()"
-        >
-          Change Mode
-        </button>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Settings</a>
+        <button onclick="changeBackground()" class="block px-3 py-2 rounded hover:bg-gray-700">Change Mode</button>
       </nav>
-      <div class="mt-auto">
-        <button class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full">
-          Quit
-        </button>
+      <div class="mt-10">
+        <button onclick="" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full">Quit</button>
       </div>
-    </div>
+    </aside>
 
     <!-- Main Content -->
-    <div
-      id="darkmode"
-      class="flex-1 p-8 overflow-y-auto bg-white text-gray-800 transition-colors duration-300"
-    >
-      <h1 class="text-3xl font-bold mb-6">Dashboard Overview</h1>
+    <main id="darkmode" class="flex-1 p-4 md:p-8 overflow-y-auto bg-white text-gray-800 transition-colors duration-300">
+      <h1 class="text-3xl font-bold mb-6 text-center md:text-left">Dashboard Overview</h1>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Cards -->
-        <div
-          class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300"
-        >
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        <!-- System Status -->
+        <div class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300">
           <h3 class="text-xl font-semibold mb-2">System Status</h3>
-          <p class="text-green-600">Ready</p>
+          <p id="status">{{system_status}}</p>
         </div>
 
-        <div
-          class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300"
-        >
+        <!-- Last Sort -->
+        <div class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300">
           <h3 class="text-xl font-semibold mb-2">Last Sort</h3>
-          <p class="text-gray-600">No Sorts yet...</p>
+          <p class="text-gray-600">No sort yet</p>
         </div>
 
-        <div
-          class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300"
-        >
+        <!-- Upcoming Tasks -->
+        <div class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300">
           <h3 class="text-xl font-semibold mb-2">Upcoming Tasks</h3>
           <ul class="list-disc list-inside text-gray-600">
             <li>Slow Sort or whatever</li>
@@ -82,96 +57,77 @@
           </ul>
         </div>
 
-        <div
-          class="card bg-white rounded-2xl shadow p-6 col-span-1 md:col-span-2 transition-colors duration-300"
-        >
+        <!-- Live Feed -->
+        <div class="card bg-white rounded-2xl shadow p-6 xl:col-span-2 transition-colors duration-300">
           <h3 class="text-xl font-semibold mb-2">Live Feed</h3>
-          <div
-            class="h-40 bg-gray-200 rounded flex items-center justify-center text-gray-500"
-          >
-            No live feed available
+          <div class="w-full aspect-video overflow-hidden rounded-xl shadow">
+            <img src="{{ url_for('video_feed') }}" class="w-full h-full object-cover" alt="Live Feed">
           </div>
         </div>
 
-        <div
-          class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300"
-        >
+        <!-- Sort Count -->
+        <div class="card bg-white rounded-2xl shadow p-6 transition-colors duration-300">
           <h3 class="text-xl font-semibold mb-2">Sort Count</h3>
-          <p class="text-4xl font-bold text-blue-600">0</p>
+          <p id="sort-count" class="text-4xl font-bold text-blue-600">{{ sorts }}</p>
+
           <p class="text-gray-600 mt-2">Items sorted today</p>
         </div>
       </div>
-    </div>
-
+    </main>
     <script>
+
+      
+    </script>
+    
+    
+    
+    <script>
+      async function startSystem() {
+        const response = await fetch("/start");
+        const data = await response.json();
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = data.system_status;
+        if (data.system_status === "ON") {
+          statusEl.style.color = "green";
+        } else if (data.system_status === "OFF") {
+          statusEl.style.color = "red";
+        }
+      }
+
       function changeBackground() {
         const darkmodeDiv = document.getElementById("darkmode");
         const cards = darkmodeDiv.querySelectorAll(".card");
-        const liveFeed = darkmodeDiv.querySelector(".card:nth-child(4) > div");
 
         if (darkmodeDiv.classList.contains("bg-white")) {
-          // Switch to dark mode
-          darkmodeDiv.classList.remove("bg-white", "text-gray-800");
-          darkmodeDiv.classList.add("bg-gray-900", "text-white");
-
-          // Change cards background and text for dark mode
+          darkmodeDiv.classList.replace("bg-white", "bg-gray-900");
+          darkmodeDiv.classList.replace("text-gray-800", "text-white");
           cards.forEach((card) => {
-            card.classList.remove("bg-white");
-            card.classList.add("bg-gray-800", "text-gray-200");
+            card.classList.replace("bg-white", "bg-gray-800");
+            card.classList.replace("text-gray-800", "text-gray-200");
           });
-
-          // Adjust text colors inside cards for better visibility
-          cards.forEach((card) => {
-            card.querySelectorAll("p, h3, ul, li").forEach((el) => {
-              if (
-                !el.classList.contains("text-green-600") &&
-                !el.classList.contains("text-blue-600")
-              ) {
-                el.classList.remove("text-gray-600", "text-gray-800");
-                el.classList.add("text-gray-200");
-              }
-            });
-          });
-
-          // Live feed box background and text
-          if (liveFeed) {
-            liveFeed.classList.remove("bg-gray-200", "text-gray-500");
-            liveFeed.classList.add("bg-gray-700", "text-gray-300");
-          }
         } else {
-          // Switch back to light mode
-          darkmodeDiv.classList.remove("bg-gray-900", "text-white");
-          darkmodeDiv.classList.add("bg-white", "text-gray-800");
-
-          // Reset cards to light background and text
+          darkmodeDiv.classList.replace("bg-gray-900", "bg-white");
+          darkmodeDiv.classList.replace("text-white", "text-gray-800");
           cards.forEach((card) => {
-            card.classList.remove("bg-gray-800", "text-gray-200");
-            card.classList.add("bg-white", "text-gray-800");
+            card.classList.replace("bg-gray-800", "bg-white");
+            card.classList.replace("text-gray-200", "text-gray-800");
           });
-
-          // Reset text colors inside cards
-          cards.forEach((card) => {
-            card.querySelectorAll("p, h3, ul, li").forEach((el) => {
-              el.classList.remove("text-gray-200");
-              // Reset colors to original, special colors preserved
-              if (
-                el.classList.contains("text-green-600") ||
-                el.classList.contains("text-blue-600")
-              ) {
-                // keep special colors
-              } else {
-                el.classList.add("text-gray-600");
-              }
-            });
-          });
-
-          // Reset live feed box
-          if (liveFeed) {
-            liveFeed.classList.remove("bg-gray-700", "text-gray-300");
-            liveFeed.classList.add("bg-gray-200", "text-gray-500");
-          }
         }
       }
+      
+      async function updateSorts() {
+  try {
+    const response = await fetch("/get_sorts");
+    const data = await response.json();
+    document.getElementById("sort-count").textContent = data.sorts;
+  } catch (err) {
+    console.error("Error fetching sort count:", err);
+  }
+}
+
+// Call it every second
+setInterval(updateSorts, 1000);
+
     </script>
   </body>
 </html>
