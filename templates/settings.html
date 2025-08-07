@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sorter Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col md:flex-row">
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 bg-gray-900 text-white p-6 space-y-6 md:min-h-screen">
+      <div class="flex flex-col items-center space-y-4">
+        <div class="h-24 w-24 rounded-2xl">
+          
+        </div>
+        <h2 class="text-2xl font-bold">Mini Sorter</h2>
+      </div>
+      <nav class="space-y-3 mt-6">
+        <a href="/" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</a>
+        <a href="#" onclick="startSystem()" class="block px-3 py-2 rounded hover:bg-gray-700">Start/Stop</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Sort Options</a>
+        <a href="/logs" class="block px-3 py-2 rounded hover:bg-gray-700">Logs</a>
+        <a href="/settings" class="block px-3 py-2 rounded hover:bg-gray-700">Settings</a>
+        <button onclick="changeBackground()" class="block px-3 py-2 rounded hover:bg-gray-700">Change Mode</button>
+      </nav>
+      <div class="mt-10">
+        <button onclick="" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full">Quit</button>
+      </div>
+    </aside>
+
+    <body class="bg-gray-100 p-8 flex-1">
+  <div class="w-full bg-white p-8 rounded-2xl shadow-lg"> 
+    <h1 class="text-4xl font-bold mb-6 text-gray-800">Sorter Settings</h1>
+
+    <div class="mb-4">
+      <label for="speed" class="block mb-2 text-lg font-semibold text-gray-700">Select Speed</label>
+      <select id="speed" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        {% for s in speeds %}
+          <option value="{{ s }}" {% if s == speed %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button onclick="setSpeed()" class="w-64 mt-10 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200">
+      Save Speed
+    </button>
+
+    <p id="status" class="mt-4 text-green-600 font-medium"></p>
+  </div>
+</body>
+
+  <script>
+    async function setSpeed() {
+      const selected = document.getElementById('speed').value;
+      const response = await fetch(`/set_speed/${selected}`);
+      const data = await response.json();
+      if (data.status === 'ok') {
+        document.getElementById('status').innerText = `Speed set to ${data.speed}`;
+      } else {
+        document.getElementById('status').innerText = `Error: ${data.message}`;
+      }
+    }
+
+
+
+  </script>
+
+
+
+<script>
+      async function startSystem() {
+        const response = await fetch("/start");
+        const data = await response.json();
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = data.system_status;
+        if (data.system_status === "ON") {
+          statusEl.style.color = "green";
+        } else if (data.system_status === "OFF") {
+          statusEl.style.color = "red";
+        }
+      }
+
+      function changeBackground() {
+        const darkmodeDiv = document.getElementById("darkmode");
+        const cards = darkmodeDiv.querySelectorAll(".card");
+
+        if (darkmodeDiv.classList.contains("bg-white")) {
+          darkmodeDiv.classList.replace("bg-white", "bg-gray-900");
+          darkmodeDiv.classList.replace("text-gray-800", "text-white");
+          cards.forEach((card) => {
+            card.classList.replace("bg-white", "bg-gray-800");
+            card.classList.replace("text-gray-800", "text-gray-200");
+          });
+        } else {
+          darkmodeDiv.classList.replace("bg-gray-900", "bg-white");
+          darkmodeDiv.classList.replace("text-white", "text-gray-800");
+          cards.forEach((card) => {
+            card.classList.replace("bg-gray-800", "bg-white");
+            card.classList.replace("text-gray-200", "text-gray-800");
+          });
+        }
+      }
+      
+      async function updateSorts() {
+  try {
+    const response = await fetch("/get_sorts");
+    const data = await response.json();
+    document.getElementById("sort-count").textContent = data.sorts;
+  } catch (err) {
+    console.error("Error fetching sort count:", err);
+  }
+}
+</script>
+  </body>
+  </html>

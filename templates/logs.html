@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sorter Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    
+  </head>
+
+  <body class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900 text-white p-6 flex flex-col space-y-6">
+      <div class="flex flex-col items-center space-y-4">
+        <div class="h-24 w-24 rounded-2xl"></div>
+        <h2 class="text-2xl font-bold">Mini Sorter</h2>
+      </div>
+      <nav class="space-y-3 mt-6">
+        <a href="/" class="block px-3 py-2 rounded hover:bg-gray-700">Dashboard</a>
+        <a href="#" onclick="startSystem()" class="block px-3 py-2 rounded hover:bg-gray-700">Start/Stop</a>
+        <a href="#" class="block px-3 py-2 rounded hover:bg-gray-700">Sort Options</a>
+        <a href="/logs" class="block px-3 py-2 rounded hover:bg-gray-700">Logs</a>
+        <a href="/settings" class="block px-3 py-2 rounded hover:bg-gray-700">Settings</a>
+        <button onclick="changeBackground()" class="block px-3 py-2 rounded hover:bg-gray-700">Change Mode</button>
+      </nav>
+      <div class="mt-10">
+        <button class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded w-full">Quit</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <body class="bg-gray-100 p-8 flex-1">
+  <div class="w-full bg-white p-8 rounded-2xl shadow-lg"> 
+    <h1 class="text-4xl font-bold mb-6 text-gray-800">Logs</h1>
+      <!-- Your logs table or other content goes here -->
+       <div id="log-container" class="overflow-auto h-96 bg-gray-100 text-gray-900 p-4 rounded-lg shadow-inner"></div>
+
+
+    <script>
+        async function fetchLogs(){
+            try{
+                const response = await fetch('/get_logs');
+                const data = await response.json();
+                const container = document.getElementById('log-container');
+                container.innerHTML = data.logs.map(log => `<div>${log}</div>`).join('');
+                
+                
+                
+            } catch (e) {
+                console.error("Error Fetching Logs");
+            }
+
+        }
+
+        setInterval(fetchLogs, 1000);
+        fetchLogs()
+    
+
+      async function startSystem() {
+        const response = await fetch("/start");
+        const data = await response.json();
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = data.system_status;
+        if (data.system_status === "ON") {
+          statusEl.style.color = "green";
+        } else if (data.system_status === "OFF") {
+          statusEl.style.color = "red";
+        }
+      }    
+
+      async function updateSorts() {
+  try {
+    const response = await fetch("/get_sorts");
+    const data = await response.json();
+    document.getElementById("sort-count").textContent = data.sorts;
+  } catch (err) {
+    console.error("Error fetching sort count:", err);
+  }
+}
+
+
+
+
+
+      function changeBackground() {
+        const darkmodeDiv = document.getElementById("darkmode");
+        const cards = darkmodeDiv.querySelectorAll(".card");
+
+        if (darkmodeDiv.classList.contains("bg-white")) {
+          darkmodeDiv.classList.replace("bg-white", "bg-gray-900");
+          darkmodeDiv.classList.replace("text-gray-800", "text-white");
+          cards.forEach((card) => {
+            card.classList.replace("bg-white", "bg-gray-800");
+            card.classList.replace("text-gray-800", "text-gray-200");
+          });
+        } else {
+          darkmodeDiv.classList.replace("bg-gray-900", "bg-white");
+          darkmodeDiv.classList.replace("text-white", "text-gray-800");
+          cards.forEach((card) => {
+            card.classList.replace("bg-gray-800", "bg-white");
+            card.classList.replace("text-gray-200", "text-gray-800");
+          });
+        }
+      }
+      
+</script>
+    </main>
+  </body>
+</html>
