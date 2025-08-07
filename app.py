@@ -65,7 +65,32 @@ def generate_video_stream():
         top_left = ((width - rect_w) // 2, (height - rect_h) // 2)
         bottom_right = (top_left[0] + rect_w, top_left[1] + rect_h)
 
+        
         cv2.rectangle(frame, top_left, bottom_right, (0, 0, 255), 2)
+
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        _, buffer = cv2.imencode('.jpg', frame_rgb)
+        frame_bytes = buffer.tobytes()
+
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
+
+
+
+
+
+
+def detection_loop():
+    
+
+    while True:
+        frame = picam2.capture_array()
+
+        height, width, _ = frame.shape
+
+        rect_w, rect_h = width // 3, height // 3
+        top_left = ((width - rect_w) // 2, (height - rect_h) // 2)
+        bottom_right = (top_left[0] + rect_w, top_left[1] + rect_h)
 
         roi = frame[top_left[1]:bottom_right[1], top_left[0]:bottom_right[0]]
         hsv_roi = cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
@@ -74,12 +99,9 @@ def generate_video_stream():
         avg_s = int(np.mean(hsv_roi[:, :, 1]))
         avg_v = int(np.mean(hsv_roi[:, :, 2]))
 
-        text = f"Avg HSV: H={avg_h} S={avg_s} V={avg_v}"
+        target_h, target_s, target_v = 110, 230, 100            # HSV TUNING  Currently Set for RED
+        tol_h, tol_s, tol_v = 15, 60, 60                        # HSV TUNING  Currenttyl Set for RED
 
-        
-        target_h, target_s, target_v = 112, 245, 105
-        tol_h, tol_s, tol_v = 10, 40, 40  
-        
         def in_range(value, target, tol):
             lower = target - tol
             upper = target + tol
@@ -93,20 +115,13 @@ def generate_video_stream():
         s_match = (target_s - tol_s) <= avg_s <= (target_s + tol_s)
         v_match = (target_v - tol_v) <= avg_v <= (target_v + tol_v)
 
-        if h_match and s_match and v_match:
-            cv2.putText(frame, "Red detected!", (10, 60),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        red_detected = h_match and s_match and v_match
 
-        cv2.putText(frame, text, (10, 25),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        if red_detected:
+            servoMove()
 
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        _, buffer = cv2.imencode('.jpg', frame_rgb)
-        frame_bytes = buffer.tobytes()
 
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
-
+        time.sleep(0.05)  
 
 
 
@@ -132,6 +147,18 @@ def get_logs():
 def logs_page():
     return render_template('logs.html')
 
+def servoMove():
+    global sorts
+    print("Object detected! Moving servo")
+    add_log("Object Detected")
+    sorts += 1
+    servo.value = 1
+    time.sleep(current_speed)
+    servo.value = 0
+    time.sleep(current_speed)
+    servo.detach()
+
+
 def sorter_loop():
     servo.detach()
     global sorts, current_speed
@@ -143,15 +170,9 @@ def sorter_loop():
         while not stop_sorter.is_set():
             dist = sensor.distance
             if dist < 0.1:
-                print("Object detected! Moving servo")
-                add_log("Object Detected")
-                sorts += 1
-                servo.value = 1
-                time.sleep(current_speed)
-                servo.value = 0
-                time.sleep(current_speed)
-                servo.detach()
-            
+                servoMove()
+                
+                
     finally:
         led.off()
         servo.value = 0
@@ -217,4 +238,6 @@ def start():
 
 
 if __name__ == '__main__':
+    detection_thread = threading.Thread(target=detection_loop, daemon=True)
+    detection_thread.start()
     app.run(host='0.0.0.0', port=5000, debug=False)
